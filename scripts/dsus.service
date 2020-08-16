@@ -1,0 +1,11 @@
+[Unit]
+Description=Darn Simple Update Server
+
+[Service]
+User=dsus
+Group=dsus
+Restart=on-failure
+ExecStart=/usr/bin/dsus
+
+[Install]
+WantedBy=multi-user.target

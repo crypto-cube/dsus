@@ -1,0 +1,5 @@
+/certs/*
+dsus
+/files/*
+/.dpkg
+/scripts/*.deb
