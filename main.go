@@ -51,14 +51,13 @@ func main() {
 			log.Panic("Config folder not found!")
 		}
 		fpath = path.Join(fpath, "dsus/files")
-		os.Mkdir(fpath, 755)
+		os.MkdirAll(fpath, 755)
 	}
-	ext = "."
 	cer, err := tls.LoadX509KeyPair(ext+"/certs/server.crt", ext+"/certs/server.key")
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	log.Println("Serving content from " + fpath)
 	config := &tls.Config{Certificates: []tls.Certificate{cer}}
 	app.Post("/upload", func(c *fiber.Ctx) {
 		log.Println("fpath = " + fpath)

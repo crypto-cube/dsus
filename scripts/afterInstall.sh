@@ -6,5 +6,4 @@ else
     useradd -m dsus
 fi
 
-chmod 755 /etc/dsus
-chmod 644 /etc/dsus/* 
+chmod 755 -R /etc/dsus/ && echo "Permissions set!"
