@@ -46,21 +46,22 @@ func main() {
 	var err error
 	if isDebug != "true" {
 		ext = "/etc/dsus"
-		fpath, err := os.UserConfigDir()
+		fpath, err = os.UserConfigDir()
 		if err != nil {
 			log.Panic("Config folder not found!")
-			fpath = path.Join(fpath, "dsus")
-			os.Mkdir(fpath, 755)
 		}
+		fpath = path.Join(fpath, "dsus/files")
+		os.Mkdir(fpath, 755)
 	}
+	ext = "."
 	cer, err := tls.LoadX509KeyPair(ext+"/certs/server.crt", ext+"/certs/server.key")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	config := &tls.Config{Certificates: []tls.Certificate{cer}}
-
 	app.Post("/upload", func(c *fiber.Ctx) {
+		log.Println("fpath = " + fpath)
 		e1, err := c.FormFile("executable")
 		if err == nil {
 			s1, err := c.FormFile("signature")
@@ -76,10 +77,15 @@ func main() {
 						pubKey, err := ioutil.ReadFile(ext + "/certs/publickey.pub")
 						if err == nil {
 							if verifySignature(pubKey, exe, sig) {
-								c.SaveFile(e1, path.Join(fpath, "/files/latest"))
-								c.SaveFile(s1, path.Join(fpath, "/files/signature"))
+								log.Println("Serving files from:" + fpath)
+								log.Println("Storing ... " + path.Join(fpath, "/latest"))
+								c.SaveFile(e1, path.Join(fpath, "/latest"))
+								log.Println("Storing ... " + path.Join(fpath, "/signature"))
+								c.SaveFile(s1, path.Join(fpath, "/signature"))
+
 								hash := sha256.Sum256(exe)
-								fis, err := os.Create(path.Join(fpath, "/files/version"))
+								log.Println("Storing ... " + path.Join(fpath, "/version"))
+								fis, err := os.Create(path.Join(fpath, "/version"))
 								if err == nil {
 									fis.WriteString(fmt.Sprintf("%x", hash))
 									c.Send("OK")
