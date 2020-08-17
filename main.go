@@ -100,7 +100,11 @@ func main() {
 		c.Status(422).Send("ERROR: Required fields not set or signature invalid")
 	})
 
-	app.Static("/", "./files")
+	if fpath == "." {
+		app.Static("/", "./files")
+	} else {
+		app.Static("/", fpath)
+	}
 	app.Listen(port, config)
 
 }
