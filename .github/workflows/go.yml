@@ -22,8 +22,11 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
-    - name: Install fpm
+    - name: Install deps
       run: sudo apt-get install ruby ruby-dev rubygems build-essential
+    
+    - name: Install fpm
+      run: gem install --no-document fpm
 
     - name: Build
       run: make build-deb
