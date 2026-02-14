@@ -86,6 +86,8 @@ if [ -z "$DEVICES_PREFIX" ]; then
     exit 1
 fi
 
+chown -R dsus:dsus /var/lib/dsus
+
 # Build environment file
 ENV_FILE="${CONF_DIR}/env"
 : > "$ENV_FILE"
