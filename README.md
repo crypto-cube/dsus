@@ -13,6 +13,14 @@ A lightweight, secure update server written in Go. Upload signed binaries and se
 - Zero-config debug mode
 - Simple REST API
 
+## Installation
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/crypto-cube/dsus/master/scripts/install.sh | sudo bash
+```
+
+Prompts for public key, optional basic auth, and devices prefix. Installs systemd service.
+
 ## Quick Start
 
 ```bash
@@ -45,15 +53,13 @@ curl -X POST http://localhost:8080/upload \
 | `GET /signature` | Signature file |
 | `GET /version` | SHA256 hash of latest (file) or server version (build) |
 
-## Authentication
+## Environment Variables
 
-Set environment variables to enable Basic Auth:
-
-```bash
-export DSUS_USER=admin
-export DSUS_PASS=secret
-./dsus
-```
+| Variable | Description |
+|----------|-------------|
+| `DSUS_USER` | Basic auth username (optional) |
+| `DSUS_PASS` | Basic auth password (optional) |
+| `DSUS_DEVICES_PREFIX` | WireGuard device name prefix |
 
 ## Build
 
