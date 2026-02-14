@@ -1,4 +1,4 @@
-package main
+package services
 
 import (
 	"crypto"
@@ -16,12 +16,12 @@ import (
 )
 
 type UpdateService struct {
-	certsDir string
+	CertsDir string
 	filesDir string
 }
 
 func NewUpdateService(certsDir, filesDir string) *UpdateService {
-	return &UpdateService{certsDir: certsDir, filesDir: filesDir}
+	return &UpdateService{CertsDir: certsDir, filesDir: filesDir}
 }
 
 func (s *UpdateService) VerifySignature(pubKey, file, signature []byte) bool {

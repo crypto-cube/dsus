@@ -55,9 +55,24 @@ fi
 # Set up directories
 mkdir -p "${CONF_DIR}/certs"
 mkdir -p /var/lib/dsus/files
+mkdir -p /var/lib/dsus/wg
 echo "$PUBKEY" > "${CONF_DIR}/certs/publickey.pub"
+
+# Download easy-wg-quick
+curl -fsSL -o /var/lib/dsus/wg/easy-wg-quick \
+    "https://raw.githubusercontent.com/burghardt/easy-wg-quick/master/easy-wg-quick"
+chmod 755 /var/lib/dsus/wg/easy-wg-quick
+
 chown -R dsus:dsus "$CONF_DIR"
 chown -R dsus:dsus /var/lib/dsus
+
+# Prompt for devices prefix
+echo ""
+read -rp "Devices prefix: " DEVICES_PREFIX
+if [ -z "$DEVICES_PREFIX" ]; then
+    echo "No devices prefix provided, aborting."
+    exit 1
+fi
 
 # Build environment file
 ENV_FILE="${CONF_DIR}/env"
@@ -66,6 +81,7 @@ if [ -n "${AUTH_USER:-}" ]; then
     echo "DSUS_USER=${AUTH_USER}" >> "$ENV_FILE"
     echo "DSUS_PASS=${AUTH_PASS}" >> "$ENV_FILE"
 fi
+echo "DSUS_DEVICES_PREFIX=${DEVICES_PREFIX}" >> "$ENV_FILE"
 chmod 600 "$ENV_FILE"
 chown dsus:dsus "$ENV_FILE"
 

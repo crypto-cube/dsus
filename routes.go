@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/crypto-cube/dsus/services"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -18,9 +19,20 @@ func readFormFile(fh *multipart.FileHeader) ([]byte, error) {
 	return io.ReadAll(f)
 }
 
-func registerRoutes(app *fiber.App, svc *UpdateService) {
+func registerRoutes(app *fiber.App, svc *services.UpdateService, provSvc *services.ProvisionService) {
 	app.Get("/sversion", func(c fiber.Ctx) error {
 		return c.SendString(version)
+	})
+
+	app.Post("/provision", func(c fiber.Ctx) error {
+		configBytes, deviceName, token, err := provSvc.Provision()
+		if err != nil {
+			return c.Status(500).SendString("provision failed")
+		}
+		c.Set("X-Device-Name", deviceName)
+		c.Set("X-Auth-Token", token)
+		c.Set("Content-Type", "text/plain")
+		return c.Send(configBytes)
 	})
 
 	app.Post("/upload", func(c fiber.Ctx) error {
@@ -46,7 +58,7 @@ func registerRoutes(app *fiber.App, svc *UpdateService) {
 			return fail()
 		}
 
-		pubKey, err := os.ReadFile(path.Join(svc.certsDir, "/certs/publickey.pub"))
+		pubKey, err := os.ReadFile(path.Join(svc.CertsDir, "/certs/publickey.pub"))
 		if err != nil {
 			return fail()
 		}

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/crypto-cube/dsus/services"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/basicauth"
 	"github.com/gofiber/fiber/v3/middleware/static"
@@ -33,18 +34,30 @@ func main() {
 		}))
 	}
 
+	devicesPrefix := os.Getenv("DSUS_DEVICES_PREFIX")
+
 	certsDir := "."
 	filesDir := "."
+	wgDir := "./wg"
 	if isDebug != "true" {
+		if authUser == "" || authPass == "" {
+			log.Fatal("DSUS_USER and DSUS_PASS must be set")
+		}
+		if devicesPrefix == "" {
+			log.Fatal("DSUS_DEVICES_PREFIX must be set")
+		}
 		certsDir = "/etc/dsus"
 		filesDir = "/var/lib/dsus/files"
+		wgDir = "/var/lib/dsus/wg"
 		os.MkdirAll(filesDir, 0755)
+		os.MkdirAll(wgDir, 0755)
 	}
 
 	log.Println("Serving content from " + filesDir)
 
-	svc := NewUpdateService(certsDir, filesDir)
-	registerRoutes(app, svc)
+	svc := services.NewUpdateService(certsDir, filesDir)
+	provSvc := services.NewProvisionService(devicesPrefix, wgDir)
+	registerRoutes(app, svc, provSvc)
 
 	if filesDir == "." {
 		app.Use("/", static.New("./files"))
