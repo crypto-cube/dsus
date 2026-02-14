@@ -11,6 +11,12 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
+# Install prerequisites for easy-wg-quick
+echo ""
+echo "Installing WireGuard and prerequisites..."
+apt-get update -qq
+apt-get install -y -qq wireguard wireguard-tools qrencode
+
 # Prompt for public key
 echo ""
 read -rp "Path to public key (PEM format): " PUBKEY_PATH < /dev/tty
@@ -65,6 +71,12 @@ chmod 755 /var/lib/dsus/wg/easy-wg-quick
 
 chown -R dsus:dsus "$CONF_DIR"
 chown -R dsus:dsus /var/lib/dsus
+
+# Initialize easy-wg-quick
+echo ""
+echo "Initializing WireGuard via easy-wg-quick..."
+cd /var/lib/dsus/wg
+./easy-wg-quick
 
 # Prompt for devices prefix
 echo ""
