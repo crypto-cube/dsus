@@ -13,7 +13,7 @@ fi
 
 # Prompt for public key
 echo ""
-read -rp "Path to public key (PEM format): " PUBKEY_PATH
+read -rp "Path to public key (PEM format): " PUBKEY_PATH < /dev/tty
 if [ ! -f "$PUBKEY_PATH" ]; then
     echo "File not found: ${PUBKEY_PATH}, aborting."
     exit 1
@@ -22,9 +22,9 @@ PUBKEY=$(cat "$PUBKEY_PATH")
 
 # Prompt for basic auth credentials
 echo ""
-read -rp "Basic auth username (leave empty to disable): " AUTH_USER
+read -rp "Basic auth username (leave empty to disable): " AUTH_USER < /dev/tty
 if [ -n "$AUTH_USER" ]; then
-    read -rsp "Basic auth password: " AUTH_PASS
+    read -rsp "Basic auth password: " AUTH_PASS < /dev/tty
     echo ""
     if [ -z "$AUTH_PASS" ]; then
         echo "Password cannot be empty when username is set, aborting."
@@ -68,7 +68,7 @@ chown -R dsus:dsus /var/lib/dsus
 
 # Prompt for devices prefix
 echo ""
-read -rp "Devices prefix: " DEVICES_PREFIX
+read -rp "Devices prefix: " DEVICES_PREFIX < /dev/tty
 if [ -z "$DEVICES_PREFIX" ]; then
     echo "No devices prefix provided, aborting."
     exit 1
