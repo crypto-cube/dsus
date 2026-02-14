@@ -13,12 +13,12 @@ fi
 
 # Prompt for public key
 echo ""
-echo "Paste your public key (PEM format), then press Enter and Ctrl+D:"
-PUBKEY=$(cat)
-if [ -z "$PUBKEY" ]; then
-    echo "No public key provided, aborting."
+read -rp "Path to public key (PEM format): " PUBKEY_PATH
+if [ ! -f "$PUBKEY_PATH" ]; then
+    echo "File not found: ${PUBKEY_PATH}, aborting."
     exit 1
 fi
+PUBKEY=$(cat "$PUBKEY_PATH")
 
 # Prompt for basic auth credentials
 echo ""
