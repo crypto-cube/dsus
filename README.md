@@ -23,6 +23,20 @@ Prompts for public key, optional basic auth, and devices prefix. Installs system
 
 ## Quick Start
 
+### 1. Generate Signing Keys
+
+```bash
+# Private key
+openssl genrsa -out private.pem 4096
+
+# Public key
+openssl rsa -in private.pem -pubout -out publickey.pub
+```
+
+Place `publickey.pub` in `./certs/` (debug) or `/etc/dsus/certs/` (production).
+
+### 2. Build & Run
+
 ```bash
 # Debug build
 just build-debug
@@ -91,16 +105,9 @@ Place in `./certs/` (debug) or `/etc/dsus/certs/` (production):
 
 - `publickey.pub` - RSA public key for signature verification
 
-## Generating Keys
+## Signing a File
 
 ```bash
-# Private key
-openssl genrsa -out private.pem 2048
-
-# Public key
-openssl rsa -in private.pem -pubout -out publickey.pub
-
-# Sign a file
 openssl dgst -sha256 -sign private.pem -out signature.sig your-app
 ```
 
