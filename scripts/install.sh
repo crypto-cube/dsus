@@ -78,6 +78,11 @@ echo "Initializing WireGuard via easy-wg-quick..."
 cd /var/lib/dsus/wg
 ./easy-wg-quick
 
+#Do not forward internet traffic to vpn
+echo "10.127.0.0/24" > /var/lib/dsus/wg/intnetallowedips.txt
+echo "none" > /var/lib/dsus/wg/fwtype.txt
+echo "linux" > /var/lib/dsus/wg/sysctltype.txt
+
 # Prompt for devices prefix
 echo ""
 read -rp "Devices prefix: " DEVICES_PREFIX < /dev/tty
